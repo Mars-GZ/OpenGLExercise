@@ -189,6 +189,8 @@ int main() {
         shader.setMat4("projection", projection);
         shader.setVec3("viewPos", camera.cameraPos);
 
+        shader.setVec3("spotLight.position", camera.cameraPos);
+
         for (int i = 0; i < 10; ++i) {
             mat4 model;
             model = translate(model, cubePositions[i]);
@@ -203,7 +205,7 @@ int main() {
         lampShader.setMat4("view", camera.getViewMatrix());
         lampShader.setMat4("projection", projection);
         mat4 model;
-        model = translate(model, vec3(1.2f, 1.0f, 2.0f));
+        model = translate(model,  camera.cameraPos);
         model = scale(model, vec3(0.2));
         lampShader.setMat4("model", model);
         glBindVertexArray(vao);

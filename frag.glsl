@@ -29,6 +29,9 @@ struct Light{
     float constant;
     float linear;
     float quad;
+
+    //聚光 对应的切光角
+    float cutOff;
 };
 
 uniform vec3 viewPos;
@@ -76,9 +79,10 @@ vec3 getSpotLight(Light light){
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir,norm);
     float spec = pow(max(dot(viewDir,reflectDir),0.0),material.shininess);
-    vec3 specular = 10*spec*light.specular*
+    vec3 specular = spec*light.specular*
                     texture(material.specular,Texcoords).rgb;
 
+    //随着距离的变化，光源的强度会衰减
     float distance = length(light.position-FragPos);
     float attention = 1.0/(light.constant + light.linear * distance +
                         light.quad * distance * distance);
