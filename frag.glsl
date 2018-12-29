@@ -19,16 +19,32 @@ struct DirLight{
     vec3 specular;//镜面反射分量
 };
 
+//普通光源
+struct Light{
+    vec3 position;//位置
+    vec3 ambient;//环境光分量
+    vec3 diff;//漫反射光分量
+    vec3 specular;//镜面反射分量
+
+    float constant;
+    float linear;
+    float quad;
+};
+
 uniform vec3 viewPos;
 uniform Material material;
 uniform DirLight dirLight;
+uniform Light spotLight;
 
 out vec4 FragColor;
 
 vec3 getDirLight(DirLight);
 
+vec3 getSpotLight(Light);
+
 void main() {
-    FragColor = vec4(getDirLight(dirLight),1.0);
+//    FragColor = vec4(getDirLight(dirLight),1.0);
+    FragColor = vec4((getSpotLight(spotLight)),1.0);
 }
 
 vec3 getDirLight(DirLight light){
@@ -46,6 +62,27 @@ vec3 getDirLight(DirLight light){
     vec3 specular = spec*light.specular*
                     texture(material.specular,Texcoords).rgb;
     return ambient + diff + specular;
+}
+
+vec3 getSpotLight(Light light){
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(light.position - FragPos);
+
+    vec3 ambient = light.ambient * texture(material.ambient,Texcoords).rgb;
+
+    float viewDiff = max(dot(norm,lightDir),0.0);
+    vec3 diff = light.diff * viewDiff * texture(material.diffuse,Texcoords).rgb;
+
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir,norm);
+    float spec = pow(max(dot(viewDir,reflectDir),0.0),material.shininess);
+    vec3 specular = 10*spec*light.specular*
+                    texture(material.specular,Texcoords).rgb;
+
+    float distance = length(light.position-FragPos);
+    float attention = 1.0/(light.constant + light.linear * distance +
+                        light.quad * distance * distance);
+    return (ambient + diff + specular)*attention;
 }
 
 

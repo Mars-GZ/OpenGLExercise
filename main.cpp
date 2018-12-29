@@ -56,6 +56,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
     Shader shader("../vertex.glsl", "../frag.glsl");
+    Shader lampShader("../lampVertex.glsl", "../lampFrag.glsl");
 
     unsigned int ambientTexture = loadImage("../container2.png");
     unsigned int specularTexture = loadImage("../container2_specular.png");
@@ -143,18 +144,30 @@ int main() {
 
     shader.use();
 
+    //平行光源
     //设置光源方向
     shader.setVec3("dirLight.direction", glm::vec3(-0.2, -1.0, -0.3));
     //设置光源颜色
-    shader.setVec3("dirLight.ambient", glm::vec3(0.5f));
-    shader.setVec3("dirLight.diff", glm::vec3(1.0f));
+    shader.setVec3("dirLight.ambient", glm::vec3(0.3f));
+    shader.setVec3("dirLight.diff", glm::vec3(0.5f));
     shader.setVec3("dirLight.specular", glm::vec3(1.0f));
+
+    //点光源
+    //设置光源方向
+    shader.setVec3("spotLight.position", glm::vec3(1.2f, 1.0f, 2.0f));
+    //设置光源颜色
+    shader.setVec3("spotLight.ambient", glm::vec3(0.2f));
+    shader.setVec3("spotLight.diff", glm::vec3(0.5f));
+    shader.setVec3("spotLight.specular", glm::vec3(1.0f));
+    shader.setFloat("spotLight.constant", 1.0f);
+    shader.setFloat("spotLight.linear", 0.09f);
+    shader.setFloat("spotLight.quad", 0.032f);
 
     //设置物体材料颜色
     shader.setInt("material.ambient", 0);
     shader.setInt("material.diffuse", 0);
     shader.setInt("material.specular", 1);
-    shader.setFloat("material.shininess", 32);
+    shader.setFloat("material.shininess", 64);
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
@@ -168,11 +181,11 @@ int main() {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, specularTexture);
 
-        mat4 projection;
+        mat4 projection = glm::perspective(glm::radians(camera.zoom),
+                                           float(WIDTH) / float(HEIGHT), 0.1f, 100.0f);
+
         shader.use();
         shader.setMat4("view", camera.getViewMatrix());
-        projection = glm::perspective(glm::radians(camera.zoom), float(WIDTH) / float(HEIGHT),
-                                      0.1f, 100.0f);
         shader.setMat4("projection", projection);
         shader.setVec3("viewPos", camera.cameraPos);
 
@@ -180,11 +193,21 @@ int main() {
             mat4 model;
             model = translate(model, cubePositions[i]);
             float angle = 20 * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0, 0.3, 0.5));
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0, 0, 0));
             shader.setMat4("model", model);
             glBindVertexArray(vao);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        lampShader.use();
+        lampShader.setMat4("view", camera.getViewMatrix());
+        lampShader.setMat4("projection", projection);
+        mat4 model;
+        model = translate(model, vec3(1.2f, 1.0f, 2.0f));
+        model = scale(model, vec3(0.2));
+        lampShader.setMat4("model", model);
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
