@@ -30,8 +30,12 @@ public:
         vertexFile.close();
         fragFile.close();
 
-        const char *vertexCode = vertexStream.str().c_str();
-        const char *fragCode = fragStream.str().c_str();
+        string svertexCode;
+        string sfragCode;
+        svertexCode = vertexStream.str();
+        sfragCode = fragStream.str();
+        const char *vertexCode = svertexCode.c_str();
+        const char *fragCode = sfragCode.c_str();
 
         unsigned int vertex, frag;
 
