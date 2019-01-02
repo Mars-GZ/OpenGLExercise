@@ -5,9 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "stb_image.h"
-#include "shader.h"
-#include "camera.h"
+#include "../stb_image.h"
+#include "../shader.h"
+#include "../camera.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -56,17 +56,13 @@ int main() {
     }
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_STENCIL_TEST);
-
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     Shader shader("../vertex.glsl", "../frag.glsl");
-    Shader selectShader("../vertex.glsl", "../selectFrag.glsl");
     Shader lampShader("../lampVertex.glsl", "../lampFrag.glsl");
 
-    unsigned int ambientTexture = loadImage("../container2.png");
-    unsigned int specularTexture = loadImage("../container2_specular.png");
-    unsigned int emission = loadImage("../matrix.jpg");
+    unsigned int ambientTexture = loadImage("../../container2.png");
+    unsigned int specularTexture = loadImage("../../container2_specular.png");
+    unsigned int emission = loadImage("../../matrix.jpg");
 
     float verticws[] = {
             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
@@ -173,14 +169,13 @@ int main() {
     shader.setInt("material.ambient", 0);
     shader.setInt("material.diffuse", 0);
     shader.setInt("material.specular", 1);
-    shader.setInt("material.emission", 2);
     shader.setFloat("material.shininess", 64);
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
         glClearColor(0.72, 0.52, 0.3, 1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ambientTexture);
@@ -188,14 +183,8 @@ int main() {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, specularTexture);
 
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, emission);
-
         mat4 projection = glm::perspective(glm::radians(camera.zoom),
                                            float(WIDTH) / float(HEIGHT), 0.1f, 100.0f);
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
 
         shader.use();
         shader.setMat4("view", camera.getViewMatrix());
@@ -212,37 +201,13 @@ int main() {
             mat4 model;
             model = translate(model, cubePositions[i]);
             float angle = 20 * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1));
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0, 0, 0));
             shader.setMat4("model", model);
             glBindVertexArray(vao);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST);
-
-        selectShader.use();
-        selectShader.setMat4("view", camera.getViewMatrix());
-        selectShader.setMat4("projection", projection);
-        selectShader.setVec3("viewPos", camera.cameraPos);
-
-        for (int i = 0; i < 10; ++i) {
-            mat4 model;
-            model = translate(model, cubePositions[i]);
-            float angle = 20 * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1));
-            model = glm::scale(model, vec3(1.05));
-            shader.setMat4("model", model);
-            glBindVertexArray(vao);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-
-        glBindVertexArray(0);
-        glStencilMask(0xFF);
-        glEnable(GL_DEPTH_TEST);
-
-//        bindSpotLight(lampShader, vao, projection);
+        bindSpotLight(lampShader, vao, projection);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -8,7 +8,6 @@ struct Material{
     sampler2D ambient;//环境材料
     sampler2D diffuse;//漫反射材料
     sampler2D specular;//镜面反射材料
-    sampler2D emission;//表面贴图
     float shininess;//反光度
 };
 
@@ -51,8 +50,7 @@ vec3 getSpotLight(Light);
 
 void main() {
 //    FragColor = vec4(getDirLight(dirLight),1.0);
-//    FragColor = texture(material.ambient,Texcoords);
-    FragColor = vec4(getSpotLight(spotLight),1.0);
+    FragColor = vec4((getSpotLight(spotLight)),1.0);
 }
 
 vec3 getDirLight(DirLight light){
@@ -87,8 +85,6 @@ vec3 getSpotLight(Light light){
     vec3 specular = spec*light.specular*
                     texture(material.specular,Texcoords).rgb;
 
-    vec3 emission = texture(material.emission,Texcoords).rgb;
-
     //随着距离的变化，光源的强度会衰减
     float distance = length(light.position-FragPos);
     float attention = 1.0/(light.constant + light.linear * distance +
@@ -97,8 +93,7 @@ vec3 getSpotLight(Light light){
     float theta = dot(lightDir,normalize(-light.direction));
     float epsilon = light.inCutOff-light.outCutOff;
     float intensity = clamp((theta-light.outCutOff)/epsilon,0.0,1.0);
-
-    return (ambient + diff + specular + emission)*attention + (diff+specular)*intensity;
+    return (ambient + diff + specular)*attention + (diff+specular)*intensity;
 }
 
 
