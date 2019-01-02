@@ -12,16 +12,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="787e9241-acee-4087-8b7c-82c7ed5cc405" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/light/frag.glsl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/light/lampFrag.glsl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/light/lampVertex.glsl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/light/main.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/light/vertex.glsl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/marble.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/selectFrag.glsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grass.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/window.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frag.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/frag.glsl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vertex.glsl" beforeDir="false" afterPath="$PROJECT_DIR$/vertex.glsl" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -50,9 +46,10 @@
           <entry key="cpp" value="6" />
           <entry key="fstream" value="2" />
           <entry key="gitignore" value="2" />
-          <entry key="glsl" value="23" />
+          <entry key="glsl" value="26" />
           <entry key="h" value="12" />
           <entry key="hpp" value="1" />
+          <entry key="jpg" value="1" />
           <entry key="png" value="4" />
           <entry key="sh" value="1" />
           <entry key="txt" value="5" />
@@ -62,17 +59,17 @@
         <counts>
           <entry key="CMakeCache.txt" value="1" />
           <entry key="CMakeLists.txt" value="4" />
-          <entry key="GLSL shader file" value="23" />
-          <entry key="Image" value="4" />
+          <entry key="GLSL shader file" value="26" />
+          <entry key="Image" value="5" />
           <entry key="ObjectiveC" value="22" />
           <entry key="PLAIN_TEXT" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="3973" />
+          <entry key="cpp" value="5098" />
           <entry key="gitignore" value="24" />
-          <entry key="glsl" value="2567" />
+          <entry key="glsl" value="2755" />
           <entry key="h" value="3452" />
           <entry key="sh" value="5" />
           <entry key="txt" value="43" />
@@ -81,8 +78,8 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CMakeLists.txt" value="43" />
-          <entry key="GLSL shader file" value="2567" />
-          <entry key="ObjectiveC" value="7425" />
+          <entry key="GLSL shader file" value="2755" />
+          <entry key="ObjectiveC" value="8550" />
           <entry key="PLAIN_TEXT" value="29" />
         </counts>
       </usages-collector>
@@ -90,11 +87,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="175" column="40" selection-start-line="175" selection-start-column="40" selection-end-line="175" selection-end-column="40" />
+            <state relative-caret-position="162">
+              <caret line="212" column="47" selection-start-line="212" selection-start-column="47" selection-end-line="212" selection-end-column="47" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -102,11 +99,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/vertex.glsl">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="108">
+              <caret line="3" column="19" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/frag.glsl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="471">
-              <caret line="99" lean-forward="true" selection-start-line="99" selection-end-line="99" />
+            <state relative-caret-position="156">
+              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
@@ -129,6 +135,8 @@
       <find>direction</find>
       <find>scale</find>
       <find>GL_STENCIL_TEST</find>
+      <find>ambientTexture</find>
+      <find>texture</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -140,15 +148,15 @@
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/shader.h" />
-        <option value="$PROJECT_DIR$/vertex.glsl" />
         <option value="$PROJECT_DIR$/camera.h" />
         <option value="$PROJECT_DIR$/lampFrag.glsl" />
         <option value="$PROJECT_DIR$/lampVertex.glsl" />
         <option value="$PROJECT_DIR$/light/run.sh" />
         <option value="$PROJECT_DIR$/light/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/selectFrag.glsl" />
-        <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/vertex.glsl" />
         <option value="$PROJECT_DIR$/frag.glsl" />
+        <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
   </component>
@@ -179,11 +187,6 @@
               <item name="highOpenGL" type="b2602c69:ProjectViewProjectNode" />
               <item name="highOpenGL" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="highOpenGL" type="b2602c69:ProjectViewProjectNode" />
-              <item name="highOpenGL" type="462c0819:PsiDirectoryNode" />
-              <item name="light" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -191,7 +194,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="container2&#9;FILE&#9;file:///home/mesmers/CLionProjects/highOpenGL/container2.png" />
+    <property name="SearchEverywhereHistoryKey" value="marble&#9;FILE&#9;file:///home/mesmers/CLionProjects/highOpenGL/marble.jpg&#10;container2&#9;FILE&#9;file:///home/mesmers/CLionProjects/highOpenGL/container2.png" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -246,18 +249,18 @@
       <workItem from="1546322446682" duration="597000" />
       <workItem from="1546393868717" duration="2940000" />
       <workItem from="1546396826610" duration="2951000" />
-      <workItem from="1546400134459" duration="4658000" />
+      <workItem from="1546400134459" duration="12701000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48754000" />
+    <option name="totallyTimeSpent" value="56797000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1985" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18545252" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13936701" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -317,13 +320,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="214">
           <caret line="441" column="36" selection-start-line="441" selection-start-column="36" selection-end-line="441" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/vertex.glsl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="3" selection-start-line="3" selection-end-line="4" selection-end-column="40" />
         </state>
       </provider>
     </entry>
@@ -399,20 +395,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
+    <entry file="file://$PROJECT_DIR$/vertex.glsl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="175" column="40" selection-start-line="175" selection-start-column="40" selection-end-line="175" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="108">
+          <caret line="3" column="19" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/frag.glsl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="471">
-          <caret line="99" lean-forward="true" selection-start-line="99" selection-end-line="99" />
+        <state relative-caret-position="156">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/marble.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="212" column="47" selection-start-line="212" selection-start-column="47" selection-end-line="212" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

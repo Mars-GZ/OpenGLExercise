@@ -8,6 +8,8 @@
 #include "stb_image.h"
 #include "shader.h"
 #include "camera.h"
+#include <vector>
+#include <map>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -57,73 +59,98 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
+    //启动混合
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     Shader shader("../vertex.glsl", "../frag.glsl");
-    Shader selectShader("../vertex.glsl", "../selectFrag.glsl");
-    Shader lampShader("../lampVertex.glsl", "../lampFrag.glsl");
 
-    unsigned int ambientTexture = loadImage("../container2.png");
-    unsigned int specularTexture = loadImage("../container2_specular.png");
-    unsigned int emission = loadImage("../matrix.jpg");
+    unsigned int grossTexture = loadImage("../window.png");
+    unsigned int marble = loadImage("../marble.jpg");
 
     float verticws[] = {
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            // positions          // texture Coords
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
 
-            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
 
-            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 
-            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
     };
 
-    glm::vec3 cubePositions[] = {
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(2.0f, 5.0f, -15.0f),
-            glm::vec3(-1.5f, -2.2f, -2.5f),
-            glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3(2.4f, -0.4f, -3.5f),
-            glm::vec3(-1.7f, 3.0f, -7.5f),
-            glm::vec3(1.3f, -2.0f, -2.5f),
-            glm::vec3(1.5f, 2.0f, -2.5f),
-            glm::vec3(1.5f, 0.2f, -1.5f),
-            glm::vec3(-1.3f, 1.0f, -1.5f)
+    //加几株草
+    vector<vec3> grosses{
+            glm::vec3(-1.5f, 0.0f, -0.48f),
+            glm::vec3(1.5f, 0.0f, 0.51f),
+            glm::vec3(0.0f, 0.0f, 0.7f),
+            glm::vec3(-0.3f, 0.0f, -2.3f),
+            glm::vec3(0.5f, 0.0f, -0.6f)
     };
+    float grossesVerticws[] = {
+            // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.5f, 0.0f, 1.0f, 0.0f
+    };
+    unsigned grossVao, grossVbo;
+    glGenVertexArrays(1, &grossVao);
+
+    glGenBuffers(1, &grossVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, grossVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(grossesVerticws), grossesVerticws,
+                 GL_STATIC_DRAW);
+
+    glBindVertexArray(grossVao);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+                          5 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
+                          5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
 
     unsigned int vao, vbo;
     glGenVertexArrays(1, &vao);
@@ -135,46 +162,14 @@ int main() {
     glBindVertexArray(vao);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-                          8 * sizeof(float), (void *) 0);
+                          5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-                          8 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
+                          5 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
-                          8 * sizeof(float), (void *) (6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
     glBindVertexArray(0);
-
-    shader.use();
-
-    //平行光源
-    //设置光源方向
-    shader.setVec3("dirLight.direction", glm::vec3(-0.2, -1.0, -0.3));
-    //设置光源颜色
-    shader.setVec3("dirLight.ambient", glm::vec3(0.3f));
-    shader.setVec3("dirLight.diff", glm::vec3(0.5f));
-    shader.setVec3("dirLight.specular", glm::vec3(1.0f));
-
-    //点光源
-    //设置光源方向
-    shader.setVec3("spotLight.position", glm::vec3(1.2f, 1.0f, 2.0f));
-    //设置光源颜色
-    shader.setVec3("spotLight.ambient", glm::vec3(0.1f));
-    shader.setVec3("spotLight.diff", glm::vec3(0.5f));
-    shader.setVec3("spotLight.specular", glm::vec3(1.0f));
-    shader.setFloat("spotLight.constant", 1.0f);
-    shader.setFloat("spotLight.linear", 0.09f);
-    shader.setFloat("spotLight.quad", 0.032f);
-
-    //设置物体材料颜色
-    shader.setInt("material.ambient", 0);
-    shader.setInt("material.diffuse", 0);
-    shader.setInt("material.specular", 1);
-    shader.setInt("material.emission", 2);
-    shader.setFloat("material.shininess", 64);
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
@@ -183,66 +178,44 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, ambientTexture);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specularTexture);
-
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, emission);
+        glBindTexture(GL_TEXTURE_2D, marble);
 
         mat4 projection = glm::perspective(glm::radians(camera.zoom),
                                            float(WIDTH) / float(HEIGHT), 0.1f, 100.0f);
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
-
         shader.use();
         shader.setMat4("view", camera.getViewMatrix());
         shader.setMat4("projection", projection);
-        shader.setVec3("viewPos", camera.cameraPos);
+        shader.setInt("grass", 0);
 
-        //手电筒
-        shader.setVec3("spotLight.Position", camera.cameraPos);
-        shader.setVec3("spotLight.direction", camera.cameraFront);
-        shader.setFloat("spotLight.inCutOff", glm::cos(radians(12.5f)));
-        shader.setFloat("spotLight.outCutOff", glm::cos(radians(17.5f)));
+        glBindVertexArray(vao);
 
-        for (int i = 0; i < 10; ++i) {
-            mat4 model;
-            model = translate(model, cubePositions[i]);
-            float angle = 20 * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1));
-            shader.setMat4("model", model);
-            glBindVertexArray(vao);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+        mat4 model;
+        model = translate(model, vec3(-1.0f, 0.0f, -1.0f));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        model = mat4();
+        model = translate(model, vec3(2, 0, 0));
+        shader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, grossTexture);
+
+        std::map<float, vec3> sorted;
+        for (int j = 0; j < 5; ++j) {
+            float distance = glm::length(camera.cameraPos - grosses[j]);
+            sorted[distance] = grosses[j];
         }
 
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST);
-
-        selectShader.use();
-        selectShader.setMat4("view", camera.getViewMatrix());
-        selectShader.setMat4("projection", projection);
-        selectShader.setVec3("viewPos", camera.cameraPos);
-
-        for (int i = 0; i < 10; ++i) {
+        for (std::map<float, vec3>::reverse_iterator it = sorted.rbegin();
+             it != sorted.rend(); ++it) {
             mat4 model;
-            model = translate(model, cubePositions[i]);
-            float angle = 20 * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1));
-            model = glm::scale(model, vec3(1.05));
+            printf("%f\n",it->first);
+            model = translate(model, it->second);
             shader.setMat4("model", model);
-            glBindVertexArray(vao);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(grossVao);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
         }
-
-        glBindVertexArray(0);
-        glStencilMask(0xFF);
-        glEnable(GL_DEPTH_TEST);
-
-//        bindSpotLight(lampShader, vao, projection);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
