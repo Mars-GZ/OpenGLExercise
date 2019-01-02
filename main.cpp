@@ -22,6 +22,8 @@ void mouseScrollCallback(GLFWwindow *, double, double);
 
 unsigned int loadImage(const char *);
 
+void bindSpotLight(Shader &, int, mat4);
+
 Camera camera;
 
 int main() {
@@ -156,7 +158,7 @@ int main() {
     //设置光源方向
     shader.setVec3("spotLight.position", glm::vec3(1.2f, 1.0f, 2.0f));
     //设置光源颜色
-    shader.setVec3("spotLight.ambient", glm::vec3(0.2f));
+    shader.setVec3("spotLight.ambient", glm::vec3(0.1f));
     shader.setVec3("spotLight.diff", glm::vec3(0.5f));
     shader.setVec3("spotLight.specular", glm::vec3(1.0f));
     shader.setFloat("spotLight.constant", 1.0f);
@@ -189,7 +191,11 @@ int main() {
         shader.setMat4("projection", projection);
         shader.setVec3("viewPos", camera.cameraPos);
 
-        shader.setVec3("spotLight.position", camera.cameraPos);
+        //手电筒
+        shader.setVec3("spotLight.Position", camera.cameraPos);
+        shader.setVec3("spotLight.direction", camera.cameraFront);
+        shader.setFloat("spotLight.inCutOff", glm::cos(radians(12.5f)));
+        shader.setFloat("spotLight.outCutOff", glm::cos(radians(17.5f)));
 
         for (int i = 0; i < 10; ++i) {
             mat4 model;
@@ -201,15 +207,7 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        lampShader.use();
-        lampShader.setMat4("view", camera.getViewMatrix());
-        lampShader.setMat4("projection", projection);
-        mat4 model;
-        model = translate(model,  camera.cameraPos);
-        model = scale(model, vec3(0.2));
-        lampShader.setMat4("model", model);
-        glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        bindSpotLight(lampShader, vao, projection);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -222,6 +220,18 @@ int main() {
 
 bool first = true;
 double lastXPos, lastYPos;
+
+void bindSpotLight(Shader &shader, int vao, mat4 projection) {
+    shader.use();
+    shader.setMat4("view", camera.getViewMatrix());
+    shader.setMat4("projection", projection);
+    mat4 model;
+    model = translate(model, glm::vec3(1.2f, 1.0f, 2.0f));
+    model = scale(model, vec3(0.2));
+    shader.setMat4("model", model);
+    glBindVertexArray(vao);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+}
 
 void mouseMoveCallback(GLFWwindow *window, double xPos, double yPos) {
     if (first) {

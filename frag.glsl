@@ -22,6 +22,8 @@ struct DirLight{
 //普通光源
 struct Light{
     vec3 position;//位置
+    vec3 direction;//方向
+
     vec3 ambient;//环境光分量
     vec3 diff;//漫反射光分量
     vec3 specular;//镜面反射分量
@@ -30,8 +32,9 @@ struct Light{
     float linear;
     float quad;
 
-    //聚光 对应的切光角
-    float cutOff;
+    //聚光 对应的内切光角与外切光角
+    float inCutOff;
+    float outCutOff;
 };
 
 uniform vec3 viewPos;
@@ -86,7 +89,11 @@ vec3 getSpotLight(Light light){
     float distance = length(light.position-FragPos);
     float attention = 1.0/(light.constant + light.linear * distance +
                         light.quad * distance * distance);
-    return (ambient + diff + specular)*attention;
+
+    float theta = dot(lightDir,normalize(-light.direction));
+    float epsilon = light.inCutOff-light.outCutOff;
+    float intensity = clamp((theta-light.outCutOff)/epsilon,0.0,1.0);
+    return (ambient + diff + specular)*attention + (diff+specular)*intensity;
 }
 
 
