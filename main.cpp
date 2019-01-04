@@ -57,6 +57,11 @@ int main() {
         return -1;
     }
 
+    //开启面剔除
+//    glEnable(GL_CULL_FACE);
+//    glCullFace(GL_FRONT);
+//    glFrontFace(GL_CCW);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     //启动混合
@@ -67,8 +72,8 @@ int main() {
 
     Shader shader("../vertex.glsl", "../frag.glsl");
 
-    unsigned int grossTexture = loadImage("../window.png");
-    unsigned int marble = loadImage("../marble.jpg");
+    unsigned int grossTexture = loadImage("../resource/window.png");
+    unsigned int marble = loadImage("../resource/container2.png");
 
     float verticws[] = {
             // positions          // texture Coords
@@ -210,7 +215,7 @@ int main() {
         for (std::map<float, vec3>::reverse_iterator it = sorted.rbegin();
              it != sorted.rend(); ++it) {
             mat4 model;
-            printf("%f\n",it->first);
+            printf("%f\n", it->first);
             model = translate(model, it->second);
             shader.setMat4("model", model);
             glBindVertexArray(grossVao);
