@@ -1,14 +1,5 @@
 #version 330 core
 
-layout(std140) uniform ExampleBlock{
-    float value;
-    vec3 vector;
-    mat4 matrix;
-    float values[3];
-    bool boolean;
-    int integer;
-};
-
 layout(location = 0)in vec3 xPos;
 layout(location = 1)in vec2 xTexCoords;
 layout(location = 2)in vec3 xNormal;

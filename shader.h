@@ -83,8 +83,16 @@ public:
         glUniform3fv(getLocation(name), 1, &value[0]);
     }
 
+    void setBlockBindingIndex(const char *name, int index) {
+        glUniformBlockBinding(id, getBlockBinding(name), index);
+    }
+
     GLint getLocation(const char *name) const {
         return glGetUniformLocation(id, name);
+    }
+
+    GLint getBlockBinding(const char *name) const {
+        return glGetUniformBlockIndex(id, name);
     }
 
 private:
